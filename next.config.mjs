@@ -10,6 +10,9 @@ const nextConfig = {eslint: {
         // your project has type errors.
         // !! WARN !!
         ignoreBuildErrors: true,
+    },
+    experimental: {
+        missingSuspenseWithCSRBailout: false,
     },};
 
 export default nextConfig;
