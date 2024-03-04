@@ -5,7 +5,9 @@ import React, {useState} from "react";
 import {motion} from "framer-motion";
 import {LampContainer} from "@/components/ui/lamp";
 import {BackgroundGradient} from "@/components/ui/background-gradient"
-import {Input} from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea"
+import { Skeleton } from "@/components/ui/skeleton"
+
 
 async function getChat(ingredients, instructions, title, servings, message) {
     ;
@@ -18,6 +20,7 @@ async function getChat(ingredients, instructions, title, servings, message) {
 
 export default function Home() {
     const [result, setResult] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
     const searchParams = useSearchParams()
     const ingredients = searchParams.get('ingredients')
     const instructions = searchParams.get('instructions')
@@ -31,10 +34,12 @@ export default function Home() {
     };
 
     const submitChat = async () => {
+        setIsLoading(true)
         const chat = await getChat(ingredients, instructions, title, servings, chatQuery)
         // @ts-ignore
         console.log([chat["content"]])
         setResult([chat["content"]])
+        setIsLoading(false)
     };
     return (
         <main>
@@ -75,32 +80,52 @@ export default function Home() {
             <div className="flex justify-center items-center p-10">
                 <BackgroundGradient
                     className="flex items-center space-x-2 text-lg rounded-[22px] p-4 sm:p-10 bg-white dark:bg-zinc-900"
-                containerClassName="w-2/3">
-                    <p >
+                    containerClassName="w-2/3">
+                    <p>
                         {instructions}
                     </p>
                 </BackgroundGradient>
             </div>
 
             <div className="flex justify-center items-center p-10 w-screen">
-                <div className="flex items-center space-x-2 text-lg rounded-[22px] p-4 sm:p-10 bg-white dark:bg-zinc-900 w-2/3">
-                    <div>
-                        {result.map((x, idx) => (
-                            <span>{x}</span>
-                                ))}
+                <div
+                    className="flex-col items-center space-x-2 text-lg rounded-[22px] p-4 sm:p-10 bg-white dark:bg-zinc-900 w-2/3">
+
+                    <div className="justify-center items-center p-1">
+                        <div
+                            className="items-center space-x-2 text-lg rounded-[22px] p-4 sm:p-10 bg-white dark:bg-zinc-950">
+                            {!isLoading ? result.map((x, idx) => (
+                                <span>{x}</span>
+                            ))
+                            :
+                                <div className="space-y-2">
+                                    <Skeleton className="h-4 w-3/4" />
+                                    <Skeleton className="h-4 w-2/3" />
+                                    <Skeleton className="h-4 w-4/5" />
+                                </div>
+                            }
+                        </div>
                     </div>
 
-                    <div className="flex w-2/3 items-center space-x-2">
-                        <Input type="chat" placeholder="Chat" value={chatQuery} onChange={handleSearchChange}
-                               onKeyDown={handleSearchChange}/>
-                        <button className="p-[3px] relative" onClick={submitChat}>
+                    <div className="grid w-full gap-2">
+                        <Textarea placeholder="Chat" value={chatQuery} onChange={handleSearchChange}
+                               onKeyDown={handleSearchChange} disabled={isLoading}/>
+                        {!isLoading ?
+                        <button className="p-[3px] relative" onClick={submitChat} disabled={isLoading}>
                             <div
-                                className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg"/>
+                                className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg disabled:bg-zinc-800"/>
                             <div
-                                className="px-8 py-2  bg-black rounded-[6px]  relative group transition duration-200 text-white hover:bg-transparent">
+                                className="px-8 py-2  bg-black rounded-[6px]  relative group transition duration-200 text-white hover:bg-transparent disabled:bg-zinc-800">
                                 Submit
                             </div>
                         </button>
+                            :
+                            <button
+                                className="px-4 py-3 backdrop-blur-sm border border-black rounded-md hover:shadow-[0px_0px_4px_4px_rgba(0,0,0,0.1)] bg-white/[0.2] text-sm transition duration-200"
+                                disabled={isLoading}>
+                                Submit
+                            </button>
+                        }
                     </div>
 
                 </div>
