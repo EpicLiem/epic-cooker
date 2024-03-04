@@ -1,4 +1,8 @@
 import OpenAI from "openai";
+import { PassThrough} from "stream";
+import { OpenAIStream, StreamingTextResponse } from 'ai';
+
+export const runtime = 'edge';
 
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_KEY,
@@ -30,9 +34,9 @@ export async function GET(request: Request) {
         top_p: 1,
         frequency_penalty: 0,
         presence_penalty: 0,
+        stream: true
     });
-        const content = response.choices[0].message.content
-    console.log(content)
+        const stream =OpenAIStream(response);
 
-    return Response.json({ content : content })
+    return new StreamingTextResponse(stream);
 }

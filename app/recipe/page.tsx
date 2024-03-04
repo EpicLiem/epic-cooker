@@ -7,10 +7,10 @@ import {LampContainer} from "@/components/ui/lamp";
 import {BackgroundGradient} from "@/components/ui/background-gradient"
 import { Textarea } from "@/components/ui/textarea"
 import { Skeleton } from "@/components/ui/skeleton"
+import { AIStreamParser } from 'ai';
 
 
 async function getChat(ingredients: string | null, instructions: string | null, title: string | null, servings: string | null, message: string) {
-    ;
     const res = await fetch(`/api/chat?title=${title}&ingredients=${ingredients}&instructions=${instructions}&servings=${servings}&message=${message}`)
 
     const data = await res.json()
@@ -19,7 +19,7 @@ async function getChat(ingredients: string | null, instructions: string | null, 
 }
 
 export default function Home() {
-    const [result, setResult] = useState([]);
+    const [result, setResult] = useState([""]);
     const [isLoading, setIsLoading] = useState(false);
     const searchParams = useSearchParams()
     const ingredients = searchParams.get('ingredients')
@@ -35,13 +35,16 @@ export default function Home() {
 
     const submitChat = async () => {
         setIsLoading(true)
-        const chat = await getChat(ingredients, instructions, title, servings, chatQuery)
-        // @ts-ignore
-        console.log([chat["content"]])
-        // @ts-ignore
-        setResult([chat["content"]])
-        setIsLoading(false)
-    };
+        const res = await fetch(`/api/chat?title=${title}&ingredients=${ingredients}&instructions=${instructions}&servings=${servings}&message=${chatQuery}`)
+            .then(function (response) {
+                return response.text()
+            })
+            .then(function (data) {
+                setIsLoading(false)
+                // @ts-ignore
+                setResult([data])
+            });
+    }
     return (
         <main>
             <Link href={`/search`} className={"p-2 "}>
@@ -97,7 +100,7 @@ export default function Home() {
                             className="items-center space-x-2 text-lg rounded-[22px] p-4 sm:p-10 bg-white dark:bg-zinc-950">
                             {!isLoading ? result.map((x, idx) => (
                                     // eslint-disable-next-line react/jsx-key
-                                <span>{x}</span>
+                                    <span>{x}</span>
                             ))
                             :
                                 <div className="space-y-2">
