@@ -17,7 +17,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn(inter.className, "dark")}>{children}</body>
+    <head>
+      <meta property="og:image" content="/cuisines.png"/>
+      <meta property="og:title" content="Epic Cooker"/>
+      <meta property="og:url" content="/"/>
+    </head>
+    <body className={cn(inter.className, "dark")}>{children}</body>
     </html>
   );
 }
