@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Skeleton } from "@/components/ui/skeleton"
 
 
-async function getChat(ingredients, instructions, title, servings, message) {
+async function getChat(ingredients: string | null, instructions: string | null, title: string | null, servings: string | null, message: string) {
     ;
     const res = await fetch(`/api/chat?title=${title}&ingredients=${ingredients}&instructions=${instructions}&servings=${servings}&message=${message}`)
 
@@ -38,6 +38,7 @@ export default function Home() {
         const chat = await getChat(ingredients, instructions, title, servings, chatQuery)
         // @ts-ignore
         console.log([chat["content"]])
+        // @ts-ignore
         setResult([chat["content"]])
         setIsLoading(false)
     };
@@ -95,6 +96,7 @@ export default function Home() {
                         <div
                             className="items-center space-x-2 text-lg rounded-[22px] p-4 sm:p-10 bg-white dark:bg-zinc-950">
                             {!isLoading ? result.map((x, idx) => (
+                                    // eslint-disable-next-line react/jsx-key
                                 <span>{x}</span>
                             ))
                             :
