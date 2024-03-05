@@ -8,6 +8,7 @@ import {BackgroundGradient} from "@/components/ui/background-gradient"
 import { Textarea } from "@/components/ui/textarea"
 import { Skeleton } from "@/components/ui/skeleton"
 import { AIStreamParser } from 'ai';
+import Markdown from "react-markdown";
 
 
 async function getChat(ingredients: string | null, instructions: string | null, title: string | null, servings: string | null, message: string) {
@@ -100,7 +101,7 @@ export default function Home() {
                             className="items-center space-x-2 text-lg rounded-[22px] p-4 sm:p-10 bg-white dark:bg-zinc-950">
                             {!isLoading ? result.map((x, idx) => (
                                     // eslint-disable-next-line react/jsx-key
-                                    <span>{x}</span>
+                                    <Markdown key={idx}>{x}</Markdown>
                             ))
                             :
                                 <div className="space-y-2">
