@@ -117,7 +117,8 @@ export default function Home() {
                                 onChange={handleSearchChange}
                                 onKeyDown={handleSearchChange}
                                 disabled={isLoading}
-                                className="flex-grow"
+
+                                className="flex-grow resize-none"
                             />
                             {!isLoading ? (
                                 <button
