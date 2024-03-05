@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Skeleton } from "@/components/ui/skeleton"
 import { AIStreamParser } from 'ai';
 import Markdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 
 async function getChat(ingredients: string | null, instructions: string | null, title: string | null, servings: string | null, message: string) {
@@ -92,48 +93,55 @@ export default function Home() {
                 </BackgroundGradient>
             </div>
 
-            <div className="flex justify-center items-center p-10 w-screen">
-                <div
-                    className="flex-col items-center space-x-2 text-lg rounded-[22px] p-4 sm:p-10 bg-white dark:bg-zinc-900 w-2/3">
-
-                    <div className="justify-center items-center p-1">
-                        <div
-                            className="items-center space-x-2 text-lg rounded-[22px] p-4 sm:p-10 bg-white dark:bg-zinc-950">
-                            {!isLoading ? result.map((x, idx) => (
-                                    // eslint-disable-next-line react/jsx-key
-                                    <Markdown key={idx}>{x}</Markdown>
-                            ))
-                            :
+            <div className="flex flex-col justify-center items-center p-10 w-screen">
+                <div className="w-2/3 bg-white dark:bg-zinc-900 rounded-[22px] p-4 sm:p-10">
+                    <div className="flex flex-col gap-4">
+                        <div className="bg-white dark:bg-zinc-950 rounded-[22px] p-4 sm:p-10">
+                            {!isLoading ? (
+                                result.map((x, idx) => (
+                                    <Markdown key={idx} remarkPlugins={[[remarkGfm]]}>{x}</Markdown>
+                                ))
+                            ) : (
                                 <div className="space-y-2">
-                                    <Skeleton className="h-4 w-3/4" />
-                                    <Skeleton className="h-4 w-2/3" />
-                                    <Skeleton className="h-4 w-4/5" />
+                                    <Skeleton className="h-4 w-3/4"/>
+                                    <Skeleton className="h-4 w-2/3"/>
+                                    <Skeleton className="h-4 w-4/5"/>
                                 </div>
-                            }
+                            )}
+                        </div>
+
+                        <div className="flex gap-2">
+                            <Textarea
+                                placeholder="Chat"
+                                value={chatQuery}
+                                onChange={handleSearchChange}
+                                onKeyDown={handleSearchChange}
+                                disabled={isLoading}
+                                className="flex-grow"
+                            />
+                            {!isLoading ? (
+                                <button
+                                    className="p-[3px] relative disabled:opacity-50"
+                                    onClick={submitChat}
+                                    disabled={isLoading}
+                                >
+                                    <div
+                                        className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg"/>
+                                    <div
+                                        className="px-4 py-7 bg-black rounded-[6px] relative group transition duration-200 text-white hover:bg-transparent">
+                                        Submit
+                                    </div>
+                                </button>
+                            ) : (
+                                <button
+                                    className="px-4 py-3 backdrop-blur-sm border border-black rounded-md hover:shadow-[0px_0px_4px_4px_rgba(0,0,0,0.1)] bg-white/[0.2] text-sm transition duration-200"
+                                    disabled={isLoading}
+                                >
+                                    Submit
+                                </button>
+                            )}
                         </div>
                     </div>
-
-                    <div className="grid w-full gap-2">
-                        <Textarea placeholder="Chat" value={chatQuery} onChange={handleSearchChange}
-                               onKeyDown={handleSearchChange} disabled={isLoading}/>
-                        {!isLoading ?
-                        <button className="p-[3px] relative" onClick={submitChat} disabled={isLoading}>
-                            <div
-                                className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-lg disabled:bg-zinc-800"/>
-                            <div
-                                className="px-8 py-2  bg-black rounded-[6px]  relative group transition duration-200 text-white hover:bg-transparent disabled:bg-zinc-800">
-                                Submit
-                            </div>
-                        </button>
-                            :
-                            <button
-                                className="px-4 py-3 backdrop-blur-sm border border-black rounded-md hover:shadow-[0px_0px_4px_4px_rgba(0,0,0,0.1)] bg-white/[0.2] text-sm transition duration-200"
-                                disabled={isLoading}>
-                                Submit
-                            </button>
-                        }
-                    </div>
-
                 </div>
             </div>
 
