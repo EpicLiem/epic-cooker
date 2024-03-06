@@ -29,7 +29,7 @@ export async function GET(request: Request) {
         messages: [
             {
                 "role": "system",
-                "content": `Help the user with the recipe. Info: \n ingredients:${ingredients} \n instructions:${instructions} \n title:${title} \n servings:${servings}`
+                "content": `Help the user with the recipe. Be specific. Info: \n ingredients:${ingredients} \n instructions:${instructions} \n title:${title} \n servings:${servings}`
             },
             {
                 "role": "user",
