@@ -21,11 +21,11 @@ async function getChat(ingredients: string | null, instructions: string | null, 
 }
 
 export default function Home() {
-    const [result, setResult] = useState([""]);
-    const [isLoading, setIsLoading] = useState(false);
     const searchParams = useSearchParams()
-    const ingredients = searchParams.get('ingredients')
-    const instructions = searchParams.get('instructions')
+    const [result, setResult] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+    const [ingredients, setIngredients] = useState(searchParams.get('ingredients'))
+    const [instructions, setInstructions] = useState(searchParams.get('instructions'))
     const title = searchParams.get('title')
     const servings = searchParams.get('servings')
     const [chatQuery, setChatQuery] = useState("")
@@ -43,8 +43,12 @@ export default function Home() {
             })
             .then(function (data) {
                 setIsLoading(false)
+                console.log(data)
                 // @ts-ignore
-                setResult([data])
+                const response = JSON.parse(data)
+                setResult(response.Message)
+                setIngredients(response.Ingredients)
+                setInstructions(response.Instructions)
             });
     }
     return (
@@ -98,9 +102,7 @@ export default function Home() {
                     <div className="flex flex-col gap-4">
                         <div className="bg-white dark:bg-zinc-950 rounded-[22px] p-4 sm:p-10">
                             {!isLoading ? (
-                                result.map((x, idx) => (
-                                    <Markdown key={idx} remarkPlugins={[[remarkGfm]]}>{x}</Markdown>
-                                ))
+                                    <Markdown remarkPlugins={[[remarkGfm]]}>{result}</Markdown>
                             ) : (
                                 <div className="space-y-2">
                                     <Skeleton className="h-4 w-3/4"/>

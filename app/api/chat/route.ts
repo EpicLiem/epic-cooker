@@ -29,7 +29,16 @@ export async function GET(request: Request) {
         messages: [
             {
                 "role": "system",
-                "content": `Help the user with the recipe. Be specific. Info: \n ingredients:${ingredients} \n instructions:${instructions} \n title:${title} \n servings:${servings}`
+                "content": `Help the user with the recipe. Be specific.
+                Unmodified Recipe: \n {ingredients: "${ingredients}", \n instructions: "${instructions}", \n "title:${title}", \n "servings:${servings}"
+                Use this output format that will be parsed as a json, include extra notes/text in the message section, *include no text outside of the json*, insert info where the brackets are: 
+                { "Instructions": "[Modified Intructions]", 
+                "Ingredients": "[Modified Ingredients]",
+                "Message": "[Output Message]" }
+                eg. 
+                { Instructions: "Slice the mango into thin slices...", 
+                Ingredients: "1 Mango|1 tb sugar...",
+                Message: "I modified the recipe to... Note that..." }`
             },
             {
                 "role": "user",
@@ -37,7 +46,7 @@ export async function GET(request: Request) {
             }
         ],
         temperature: 1,
-        max_tokens: 512,
+        max_tokens: 1024,
         top_p: 1,
         frequency_penalty: 0,
         presence_penalty: 0,
@@ -65,7 +74,6 @@ export async function GET(request: Request) {
     //     stream: true
     // });
         const stream =OpenAIStream(response);
-        console.log(`Help the user with the recipe. Info: \n ingredients:${ingredients} \n instructions:${instructions} \n title:${title} \n servings:${servings}`)
 
     return new StreamingTextResponse(stream);
 }
