@@ -32,13 +32,23 @@ export async function GET(request: Request) {
                 "content": `Help the user with the recipe. Be specific.
                 Unmodified Recipe: \n {ingredients: "${ingredients}", \n instructions: "${instructions}", \n "title:${title}", \n "servings:${servings}"
                 Use this output format that will be parsed as a json, include extra notes/text in the message section, *include no text outside of the json*, insert info where the brackets are: 
-                { "Instructions": "[Modified Intructions]", 
+                { 
+                "Modified": true|false,
+                "Instructions": "[Modified Intructions]", 
                 "Ingredients": "[Modified Ingredients]",
                 "Message": "[Output Message]" }
                 eg. 
-                { Instructions: "Slice the mango into thin slices...", 
-                Ingredients: "1 Mango|1 tb sugar...",
-                Message: "I modified the recipe to... Note that..." }`
+                { 
+                "Modified": true
+                "Instructions": "Slice the mango into thin slices...", 
+                "Ingredients": "1 Mango|1 tb sugar...",
+                "Message": "I modified the recipe to... Note that..." }
+                or
+                { 
+                "Modified": false
+                "Instructions": "", 
+                "Ingredients": "",
+                "Message": "In order to... Sometimes... Heat at..." }`
             },
             {
                 "role": "user",

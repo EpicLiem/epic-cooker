@@ -44,11 +44,14 @@ export default function Home() {
             .then(function (data) {
                 setIsLoading(false)
                 console.log(data)
+                data = data.slice(data.indexOf("{"), data.indexOf("}") + 1)
                 // @ts-ignore
                 const response = JSON.parse(data)
                 setResult(response.Message)
-                setIngredients(response.Ingredients)
-                setInstructions(response.Instructions)
+                if (response.Modified) {
+                    setIngredients(response.Ingredients)
+                    setInstructions(response.Instructions)
+                }
             });
     }
     return (
